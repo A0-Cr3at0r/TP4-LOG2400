@@ -1,0 +1,111 @@
+class TonYogourt {
+	Interface& ui;
+	friend Inventaire& inventaire;
+	friend Commande& commande;
+	friend EtatPhaseAppli& phase; // patron etat
+}
+
+class Interface {
+	const static enum Couleurs;
+	static void print(string texte, Interface::Couleurs couleur);
+	static void cls();
+	static void afficherAide();
+	
+	bool EcouterEtTraiterEntree();
+}
+
+class EtatPhaseAppli {
+	virtual void AjouterYogourt(string type);
+	virtual void SelectionnerYogourt(uint index);
+	virtual void AjouterGarniture(); // ouvrir menu
+	virtual void Annuler();
+	virtual void Reappliquer();
+	virtual void TerminerCommande();
+	virtual void PreparerCommande();
+	virtual void ChangerModePaiment(string mode);
+	virtual void Payer(); //todo, patron strategie
+	virtual void VoirTotal();
+	virtual void VoirStock();
+}
+
+class EtatPhaseCommandeIntitiale 	: PhaseCommande;
+class EtatPhaseCommandePreparation 	: PhaseCommande;
+class EtatPhaseCommandeTerminee		: PhaseCommande;
+
+
+class Commande { // patron singleton
+	static const uint MAX_YOGOURT = 2;
+	
+	uint calculerSousTotal();
+	//etc...
+	vector<CommandeYogourt>& yogourts;
+}
+
+
+class CommandeYogourt {
+	CommandeYogourt(weak_ref<TypeYogourt>& type);
+	
+	void ajouterGarniture(weak_ref<Garniture> garniture);
+	
+	void undo();
+	void redo();
+
+	double calculerCoutCommande();
+private:
+	ActionHistory& _undo;
+	vector<weak_ref<Garniture>>& garnitures;
+	const weak_ref<TypeYogourt>& type;
+};
+
+
+//undo redo
+class ActionHistory {
+	void RegisterAction(Action&&);
+	Action& UndoAction();
+	Action& RedoAction();
+	
+	uint			_indexcourant;
+	vector<Action>&	_undohistory;
+};
+class Action {
+	Action(Action::_type type,  weak_ref<Garniture>& garniture);
+	const enum _type {
+		AJOUTER,
+		RETIRER,
+	};
+	const weak_ref<Garniture> _garniture;
+}
+
+//stuff d'inventaire
+class Inventaire { // patron singleton, observateur
+	uint	getNumGarnitures();
+	weak_ref<Garniture>&	getGarniture(uint index);
+	
+	uint	getNumYogourts();
+	weak_ref<Garniture>&	getYogourt(uint index);
+private:
+	const vector<unique_ptr<TypeYogourt>>& yogourts;
+	const vector<unique_ptr<Garniture>>& garnitures;
+}
+
+// TODO, iterateur pour garnitures; a voir si faisable a transformer en patron decorateura
+class Garniture {
+	Garniture(string nom, uint qte_initiale, double cout) :
+		_cout(cout), _nom(nom)
+		{};		
+	uint getQte();
+	void incQte();
+	void decQte();
+		
+	const 	double		_cout;	
+	const 	string		_nom;
+private:
+	uint 	_qte;
+}
+class TypeYogourt {
+	TypeYogourt(string nom, double cout) :
+		_cout(cout), _nom(nom)
+		{};
+	const 	double		_cout;	
+	const 	string		_nom;
+}
