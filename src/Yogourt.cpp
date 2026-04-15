@@ -1,6 +1,6 @@
 #include "Yogourt.h"
 
-Yogourt::Yogourt(bool isGrec) : isGrec_(isGrec) {}
+Yogourt::Yogourt(typeYoGourt type) : type_(type) {}
 
 Yogourt::~Yogourt() {}
 
@@ -13,7 +13,7 @@ void Yogourt::undo() {
 }
 
 double Yogourt::prixTotal() {
-    double total = isGrec_ ? PRIX_GREC : PRIX_NATURE;
+    double total = type_ == typeYoGourt::GREC ? PRIX_GREC : PRIX_NATURE;
     for (auto& ptr : garnitures_) {
         total += ptr->getPrice();
     }
