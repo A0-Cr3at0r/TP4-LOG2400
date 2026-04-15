@@ -4,6 +4,7 @@
 static const int MAXYOGOURT = 2;
 static const enum class typeGarniture {FRUIT, GRANOLA, MIEL, CHOCOLAT};
 static const enum class typeYoGourt {NATURE, GREC};
+
 static const double PRIX_GREC = 2.5;
 static const double PRIX_NATURE = 2;
 static const double PRIX_FRUIT = 1;
@@ -13,6 +14,7 @@ static const double PRIX_CHOCOLAT  =  0.9;
 static const double RABAIS_PREV  =  0.1;
 static const double RABAIS_POLY =  2;
 static const double FRAIS_ECLAIR = 1.5;
+
 static const int QTE_GREC  = 3;
 static const int QTE_NATURE  = 1;
 static const int QTE_FRUIT  = 5;
