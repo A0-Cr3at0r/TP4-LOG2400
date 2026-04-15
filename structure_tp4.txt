@@ -1,36 +1,66 @@
-class TonYogourt {
-	Interface& ui;
-	friend Inventaire& inventaire;
-	friend Commande& commande;
-	friend EtatPhaseAppli& phase; // patron etat
+const static enum class Couleurs : unsigned char {
+	DEFAULT,
+	ROUGE,
+	VERT,
+	JAUNE,
+	BLEU,
+	MAUVE,
+	CYAN,
+	BLANC,
+
+	NUM_COULEURS
+};
+struct UIMessage {
+	std::string texte;
+	Couleurs couleur = Couleurs::DEFAULT;
+};
+class UIManager {
+public:
+	static void print(const std::string_view& texte, Couleurs couleur = Couleurs::DEFAULT);
+	static void cls();
+	static void print(const UIMessage& msg);
+	static void printf(const std::string_view& texte, Couleurs couleur = Couleurs::DEFAULT);
+	static void printf(const UIMessage& msg);
+	template<typename... Args> 
+	static void printf(const std::string_view& texte, Couleurs couleur = Couleurs::DEFAULT, Args... args);
+	template<typename... Args>
+	static void printf(const UIMessage& msg, Args... args);
+	
+	static UIMessage& scanf();
+private:
+	UIManager() = delete;
+	static constexpr const char* getCharCSeq(const Couleurs clr);
+	
 }
 
-class Interface {
-	const static enum Couleurs;
-	static void print(string texte, Interface::Couleurs couleur);
-	static void cls();
-	static void afficherAide();
-	
-	bool EcouterEtTraiterEntree();
-}
 
 class EtatPhaseAppli {
-	virtual void AjouterYogourt(string type);
-	virtual void SelectionnerYogourt(uint index);
-	virtual void AjouterGarniture(); // ouvrir menu
-	virtual void Annuler();
-	virtual void Reappliquer();
-	virtual void TerminerCommande();
-	virtual void PreparerCommande();
-	virtual void ChangerModePaiment(string mode);
-	virtual void Payer(); //todo, patron strategie
-	virtual void VoirTotal();
-	virtual void VoirStock();
+	virtual AppliCommande& AjouterYogourt(string type);
+	virtual AppliCommande& SelectionnerYogourt(uint index);
+	virtual AppliCommande& AjouterGarniture(); // ouvrir menu
+	virtual AppliCommande& Annuler();
+	virtual AppliCommande& Reappliquer();
+	virtual AppliCommande& TerminerCommande();
+	virtual AppliCommande& PreparerCommande();
+	virtual AppliCommande& ChangerModePaiment(string mode);
+	virtual AppliCommande& Payer(); //todo, patron strategie
+	virtual AppliCommande& VoirTotal();
+	virtual AppliCommande& VoirStock();
 }
 
-class EtatPhaseCommandeIntitiale 	: PhaseCommande;
-class EtatPhaseCommandePreparation 	: PhaseCommande;
-class EtatPhaseCommandeTerminee		: PhaseCommande;
+class EtatPhaseCommandeIntitiale 	: EtatPhaseAppli;
+class EtatPhaseCommandePreparation 	: EtatPhaseAppli;
+class EtatPhaseCommandeTerminee		: EtatPhaseAppli;
+
+class AppliCommande {
+	virtual void Execute();
+}
+class AppliCommandeAfficherTexte : AppliCommande {
+	AppliCommande(UIMessage& msg)
+	void Execute() override;
+private:
+	UIMessage& msg
+}
 
 
 class Commande { // patron singleton
@@ -85,23 +115,31 @@ class Inventaire { // patron singleton, observateur
 	weak_ref<Garniture>&	getYogourt(uint index);
 private:
 	const vector<unique_ptr<TypeYogourt>>& yogourts;
-	const vector<unique_ptr<Garniture>>& garnitures;
+	const vector<unique_ptr<GarnitureRegistre>>& garnitures;
 }
 
-// TODO, iterateur pour garnitures; a voir si faisable a transformer en patron decorateura
-class Garniture {
+class GarnitureRegistre {
 	Garniture(string nom, uint qte_initiale, double cout) :
 		_cout(cout), _nom(nom)
 		{};		
 	uint getQte();
 	void incQte();
-	void decQte();
+	Garniture decQte();
 		
 	const 	double		_cout;	
 	const 	string		_nom;
+	
+	friend class Garniture {
+		double GetCout() const;
+		string_view& getNom() const;
+	private:
+		Garniture();
+		GarnitureRegistre& source;
+	}
 private:
 	uint 	_qte;
 }
+
 class TypeYogourt {
 	TypeYogourt(string nom, double cout) :
 		_cout(cout), _nom(nom)
@@ -109,23 +147,3 @@ class TypeYogourt {
 	const 	double		_cout;	
 	const 	string		_nom;
 }
-
-
-
-Liste Patron:
-	Fabrique Abstraite/ v       /
-	Stratégie     	  / v       /
-	observateur       /        /
-	decorateur     	  /v       / v
-	methode     	  /        /
-	Fabrique     	  / v       /
-	Composite     	  /        /
-	iterateur     	  /        /
-	commande     	  / v      / v
-	mediateur         /        /
-	adaptateur     	  /        /
-	façade     	      /        /
-	singleton     	  / v       / v
-	visiteur     	  /        /
-	Proxy			  /        /
-	etat			  /        /  v
