@@ -1,15 +1,40 @@
+/// Garniture.h
+// (C) 2026 maplefoxo
+// Purpose : 
+//
+
 #pragma once
 
-#include "const.h"
+#include <pch.h>
+
+
+class GarnitureRegistre {
+public:
+	GarnitureRegistre(string& nom, unsigned int qte_initiale, double cout);
+	
+	unsigned int getQte();
+	void incQte();
+	Garniture decQte();
+		
+	const 	double		_cout;	
+	const 	string		_nom;
+	
+private:
+	unsigned int 	_qte;
+};
+
 
 class Garniture {
 public:
-    Garniture(typeGarniture typeGarniture, double prix);
-    ~Garniture();
-    double getPrice();
+	friend class GarnitureRegistre;
 
-protected:
-    typeGarniture typeGarniture_;
-    double prix_;
+	double getCout() const;
+	string_view& getNom() const;
+
+
+	Garniture(const Garniture&) = delete;
+	Garniture& operator=(const Garniture&) = delete;
+private:
+	Garniture(GarnitureRegistre& source);
+	const GarnitureRegistre& source;
 };
-

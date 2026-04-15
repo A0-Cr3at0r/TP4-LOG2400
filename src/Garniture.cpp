@@ -1,12 +1,35 @@
+/// Garniture.coo
+// (C) 2026 maplefoxo
+// Purpose : 
+//
+
+
 #include "Garniture.h"
 
-Garniture::Garniture(typeGarniture type, double prix) : typeGarniture_(type), prix_(prix) {}
+GarnitureRegistre::GarnitureRegistre(string& nom ,unsigned int qte_initiale,double cout) :
+	_nom(nom), _qte(qte_initiale), _cout(cout)
+{}
 
-Garniture::~Garniture() {}
+unsigned int GarnitureRegistre::getQte() {
+	return _qte;
+}
+void GarnitureRegistre::incQte() { ++_qte; }
 
-double Garniture::getPrice() {
-    return prix_;
+Garniture GarnitureRegistre::decQte() {
+	 --_qte;
+	return Garniture(*this);
 }
 
+double Garniture::getCout() const
+{
+	return source._cout;
+}
 
+string_view& Garniture::getNom() const
+{
+	auto s = string_view(source._nom);
+	return s;
+}
 
+Garniture::Garniture(GarnitureRegistre& source) : source(source)
+{}
