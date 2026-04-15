@@ -4,7 +4,7 @@
 
 class Yogourt {
 public:
-    Yogourt(bool isGrec);
+    Yogourt(typeYoGourt type);
     ~Yogourt();
 
     void ajouterGarniture(Garniture garniture);
@@ -12,7 +12,7 @@ public:
     double prixTotal();
 
 private: 
-    bool isGrec_;
+    typeYoGourt type_;
     std::vector<std::unique_ptr<Garniture>> garnitures_;
 
 };
