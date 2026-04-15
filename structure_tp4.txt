@@ -109,3 +109,23 @@ class TypeYogourt {
 	const 	double		_cout;	
 	const 	string		_nom;
 }
+
+
+
+Liste Patron:
+	Fabrique Abstraite/ v       /
+	Stratégie     	  / v       /
+	observateur       /        /
+	decorateur     	  /v       / v
+	methode     	  /        /
+	Fabrique     	  / v       /
+	Composite     	  /        /
+	iterateur     	  /        /
+	commande     	  / v      / v
+	mediateur         /        /
+	adaptateur     	  /        /
+	façade     	      /        /
+	singleton     	  / v       / v
+	visiteur     	  /        /
+	Proxy			  /        /
+	etat			  /        /  v
