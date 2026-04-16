@@ -55,6 +55,8 @@ public:
 
 	Aliment(const Aliment&)            = delete;
 	Aliment& operator=(const Aliment&) = delete;
+	Aliment(Aliment&&)                 = default;
+	Aliment& operator=(Aliment&&)      = delete;
 
 	template<typename, typename> friend class AlimentRegistre;
 

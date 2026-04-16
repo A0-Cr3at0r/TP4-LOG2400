@@ -59,3 +59,10 @@ bool CommandYogourt::isTermine()    const { return termine_; }
 
 Inventaire& CommandYogourt::getInventaire() { return inventaire_; }
 Abonnement& CommandYogourt::getAbonnement() { return abonnement_; }
+
+void CommandYogourt::setNotifyCallback(std::function<void()> cb) { notifyCallback_ = std::move(cb); }
+
+void CommandYogourt::notifyAll() {
+    abonnement_.notifier();
+    if (notifyCallback_) notifyCallback_();
+}

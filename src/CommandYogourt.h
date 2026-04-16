@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 #include <optional>
+#include <functional>
 
 class EtatPhaseAppli;
 class EtatPhaseCommandeInitiale;
@@ -43,6 +44,9 @@ public:
     void setTermine(bool val);
     bool isTermine() const;
 
+    void setNotifyCallback(std::function<void()> cb);
+    void notifyAll();
+
     Inventaire& getInventaire();
     Abonnement& getAbonnement();
 
@@ -55,6 +59,7 @@ private:
     std::unique_ptr<Paiement>    paiement_;
     std::optional<typeGarniture> redoGarniture_;
     bool                         termine_ = false;
+    std::function<void()>        notifyCallback_;
 
     std::unique_ptr<EtatPhaseCommandeInitiale>    etatInitiale_;
     std::unique_ptr<EtatPhaseCommandePreparation> etatPreparation_;

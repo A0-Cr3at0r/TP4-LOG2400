@@ -72,7 +72,9 @@ void EtatPhaseCommandeInitiale::AjouterYogourt(const std::string& type) {
         return;
     }
     inv.retirerYogourt(yt.value());
+    commande_->notifyAll();
     commande_->ajouterNouveauYogourt(yt.value());
+    commande_->clearRedo(); 
     UIManager::printf("Yogourt %s selectionne.\n", Couleurs::DEFAULT, type.c_str());
 }
 
@@ -99,7 +101,7 @@ void EtatPhaseCommandeInitiale::AjouterGarniture() {
         Inventaire& inv  = commande_->getInventaire();
         int actifIdx     = commande_->getIndexActif() + 1;
 
-        UIManager::print("Menu Garnitures\n", Couleurs::CYAN);
+        UIManager::print("\nMenu Garnitures\n", Couleurs::CYAN);
         UIManager::printf("  Yogourt actif: #%d\n", Couleurs::DEFAULT, actifIdx);
         int i = 1;
         for (auto gt : ordre) {
@@ -129,6 +131,7 @@ void EtatPhaseCommandeInitiale::AjouterGarniture() {
             Garniture g = inv.retirerGarniture(gt);
             commande_->getYogourtActif()->ajouterGarniture(gt, std::move(g));
             commande_->clearRedo();
+            commande_->notifyAll(); 
             UIManager::printf("Garniture '%s' ajoutee.\n", Couleurs::DEFAULT, garnitureToString(gt));
         } catch (...) {}
     }
@@ -143,6 +146,7 @@ void EtatPhaseCommandeInitiale::Annuler() {
     typeGarniture type = actif->undo();
     commande_->getInventaire().ajouterGarniture(type);
     commande_->setRedoGarniture(type);
+    commande_->notifyAll();
     UIManager::print("Derniere garniture annulee.\n", Couleurs::DEFAULT);
 }
 
@@ -162,6 +166,7 @@ void EtatPhaseCommandeInitiale::Reappliquer() {
     Garniture g = inv.retirerGarniture(type);
     commande_->getYogourtActif()->ajouterGarniture(type, std::move(g));
     commande_->clearRedo();
+    commande_->notifyAll(); 
     UIManager::print("Garniture retablie.\n", Couleurs::DEFAULT);
 }
 
@@ -184,8 +189,32 @@ void EtatPhaseCommandeInitiale::VoirStock()  { voirStockImpl(commande_); }
 
 
 
+void EtatPhaseCommandePreparation::AjouterYogourt(const std::string&) {
+    UIManager::print("Commande en preparation: impossible de modifier les yogourts.\n", Couleurs::ROUGE);
+}
+
+void EtatPhaseCommandePreparation::SelectionnerYogourt(unsigned) {
+    UIManager::print("Commande en preparation: impossible de modifier les yogourts.\n", Couleurs::ROUGE);
+}
+
+void EtatPhaseCommandePreparation::AjouterGarniture() {
+    UIManager::print("Commande en preparation: impossible d'ajouter des garnitures.\n", Couleurs::ROUGE);
+}
+
 void EtatPhaseCommandePreparation::Annuler() {
     UIManager::print("Commande en preparation: annulation verrouillee.\n", Couleurs::ROUGE);
+}
+
+void EtatPhaseCommandePreparation::Reappliquer() {
+    UIManager::print("Commande en preparation: annulation verrouillee.\n", Couleurs::ROUGE);
+}
+
+void EtatPhaseCommandePreparation::PreparerCommande() {
+    UIManager::print("Commande deja en preparation.\n", Couleurs::ROUGE);
+}
+
+void EtatPhaseCommandePreparation::ChangerModePaiement(const std::string& mode) {
+    changerModeImpl(commande_, mode);
 }
 
 void EtatPhaseCommandePreparation::TerminerCommande() {
@@ -203,8 +232,24 @@ void EtatPhaseCommandeTerminee::AjouterYogourt(const std::string&) {
     UIManager::print("Commande terminee: impossible de modifier le yogourt.\n", Couleurs::ROUGE);
 }
 
+void EtatPhaseCommandeTerminee::SelectionnerYogourt(unsigned) {
+    UIManager::print("Commande terminee: impossible de modifier le yogourt.\n", Couleurs::ROUGE);
+}
+
+void EtatPhaseCommandeTerminee::AjouterGarniture() {
+    UIManager::print("Commande terminee: impossible d'ajouter des garnitures.\n", Couleurs::ROUGE);
+}
+
 void EtatPhaseCommandeTerminee::Annuler() {
     UIManager::print("Commande terminee: annulation impossible.\n", Couleurs::ROUGE);
+}
+
+void EtatPhaseCommandeTerminee::Reappliquer() {
+    UIManager::print("Commande terminee: annulation impossible.\n", Couleurs::ROUGE);
+}
+
+void EtatPhaseCommandeTerminee::PreparerCommande() {
+    UIManager::print("Commande deja terminee.\n", Couleurs::ROUGE);
 }
 
 void EtatPhaseCommandeTerminee::TerminerCommande() {

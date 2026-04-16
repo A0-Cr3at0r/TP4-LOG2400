@@ -49,8 +49,14 @@ public:
     explicit EtatPhaseCommandePreparation(CommandYogourt* c)
         : EtatPhaseAppli(c, "En preparation") {}
 
+    void AjouterYogourt(const std::string& type) override;
+    void SelectionnerYogourt(unsigned index) override;
+    void AjouterGarniture() override;
     void Annuler() override;
+    void Reappliquer() override;
+    void PreparerCommande() override;
     void TerminerCommande() override;
+    void ChangerModePaiement(const std::string& mode) override;
     void VoirTotal() override;
     void VoirStock() override;
 };
@@ -61,7 +67,11 @@ public:
         : EtatPhaseAppli(c, "Terminee") {}
 
     void AjouterYogourt(const std::string& type) override;
+    void SelectionnerYogourt(unsigned index) override;
+    void AjouterGarniture() override;
     void Annuler() override;
+    void Reappliquer() override;
+    void PreparerCommande() override;
     void TerminerCommande() override;
     void ChangerModePaiement(const std::string& mode) override;
     void Payer() override;

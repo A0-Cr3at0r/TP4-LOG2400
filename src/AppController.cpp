@@ -8,6 +8,7 @@
 AppController::AppController()
     : commande_(Inventaire::get(), abonnement_)
 {
+    commande_.setNotifyCallback([this]() { verifierAbonnementsYogourt(); });
     UIManager::print("Bienvenue sur TonYogourt\n", Couleurs::VERT);
     afficherAide();
 }
@@ -43,12 +44,10 @@ void AppController::run() {
 
 
 void AppController::afficherStatut() const {
-    // Ligne Phase
-    UIManager::print("Phase: ", Couleurs::DEFAULT);
+    UIManager::print("\nPhase: ", Couleurs::DEFAULT);
     UIManager::print(commande_.getEtatCourant()->getNom(), Couleurs::JAUNE);
     UIManager::print("\n", Couleurs::DEFAULT);
 
-    // Lignes yogourts
     const auto& yogourts = commande_.getYogourts();
     if (yogourts.empty()) {
         UIManager::print("Yogourts: aucun\n", Couleurs::DEFAULT);
@@ -58,13 +57,11 @@ void AppController::afficherStatut() const {
             const Yogourt& y = yogourts[i];
             bool estActif    = (i == actifIdx);
 
-            // "Yogourt #N (actif): " ou "Yogourt #N: "
             if (estActif)
                 UIManager::printf("Yogourt #%d (actif): ", Couleurs::DEFAULT, i + 1);
             else
                 UIManager::printf("Yogourt #%d: ", Couleurs::DEFAULT, i + 1);
 
-            // "Yogourt grec + chocolat + fruits"
             UIManager::printf("Yogourt %s", Couleurs::DEFAULT, y.getSorteYogourt()._nom.c_str());
             for (typeGarniture t : y.getTypes())
                 UIManager::printf(" + %s", Couleurs::DEFAULT, garnitureToString(t));
@@ -204,14 +201,13 @@ void AppController::traiterUnsub(const std::string& article) {
 void AppController::traiterSubs() const {
     UIManager::print("Abonnements actifs:\n", Couleurs::CYAN);
 
-    for (const auto& [nom, _] : yogourtAbonnes_)
-        UIManager::printf("  - %s\n", Couleurs::DEFAULT, nom.c_str());
-
-    auto cb = [](std::string nom) {
+    std::function<void(std::string)> cbFn = [](std::string nom) {
         UIManager::printf("  - %s\n", Couleurs::DEFAULT, nom.c_str());
     };
-    std::function<void(std::string)> cbFn = cb;
-    const_cast<Abonnement&>(abonnement_).subs(cbFn);
+    abonnement_.subs(cbFn);
+
+    for (const auto& [nom, _] : yogourtAbonnes_)
+        UIManager::printf("  - %s\n", Couleurs::DEFAULT, nom.c_str());
 }
 
 void AppController::verifierAbonnementsYogourt() {

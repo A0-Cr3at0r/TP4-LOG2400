@@ -8,14 +8,14 @@ class Notifier
 {
 
 public:
-    Notifier(GarnitureRegistre& gi, std::function<void(std::string)>& abonne);
+    Notifier(GarnitureRegistre& gi, const std::function<void(std::string)>& abonne);
     ~Notifier();
 
     void notifier();
     std::string getAbonnement();
-    void addAbonne(std::function<void(std::string)>& abonne);
-    void removeAbonne(std::function<void(std::string)>& abonne);
-    bool contains(std::function<void(std::string)>& abonne);
+    void addAbonne(const std::function<void(std::string)>& abonne);
+    void removeAbonne(const std::function<void(std::string)>& abonne);
+    bool contains(const std::function<void(std::string)>& abonne);
 
 private:
     GarnitureRegistre& gi_;
