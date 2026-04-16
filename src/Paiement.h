@@ -1,36 +1,39 @@
+#pragma once
 #include <string>
 
-class Paiement
-{
-
+class Paiement {
 public:
-    ~Paiement() = default;
+    virtual ~Paiement() = default;
 
-    virtual void pay(double montant) = 0;
-    virtual std::string  toString() = 0;
-    double totalProjete();
-protected:
-    double total_;
+    virtual bool        estPayable()               const = 0;
+    virtual std::string getNom()                   const = 0;
+    virtual double      calculerTotal(double montant) const = 0;
 };
 
+class Aucun : public Paiement {
+public:
+    bool        estPayable()               const override;
+    std::string getNom()                   const override;
+    double      calculerTotal(double montant) const override;
+};
 
 class Prevente : public Paiement {
 public:
-    void pay(double montant) override;
-    std::string toString() override;
+    bool        estPayable()               const override;
+    std::string getNom()                   const override;
+    double      calculerTotal(double montant) const override;
 };
 
-class Eclair : public Paiement
-{
+class Eclair : public Paiement {
 public:
-    void pay(double montant) override;
-    std::string toString() override;
+    bool        estPayable()               const override;
+    std::string getNom()                   const override;
+    double      calculerTotal(double montant) const override;
 };
 
-
-class Poly : public Paiement
-{
+class Poly : public Paiement {
 public:
-    void pay(double montant) override;
-    std::string toString() override;
+    bool        estPayable()               const override;
+    std::string getNom()                   const override;
+    double      calculerTotal(double montant) const override;
 };

@@ -1,13 +1,8 @@
 #include "pch.h"
-
-#include <iostream>
-
-
-#include "ui/UIManager.h"
-#include "Inventaire.h"
+#include "AppController.h"
 
 int main() {
-    UIManager::printf("asbestos :  %i \n", Couleurs::BLEU, Inventaire::get().getNumGarnitures());
-
+    AppController app;
+    app.run();
     return 0;
-};
+}

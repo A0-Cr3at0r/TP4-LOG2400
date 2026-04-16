@@ -1,39 +1,30 @@
 /// Garniture.h
 // (C) 2026 maplefoxo
-// Purpose : 
-//
 
 #pragma once
 
 #include <pch.h>
+#include "Aliment.h"
 
+class Garniture;
 
-class GarnitureRegistre {
+class GarnitureRegistre : public AlimentRegistre<GarnitureRegistre, Garniture> {
 public:
-	GarnitureRegistre(string&& nom, const unsigned int qte_initiale, const double cout);
-	
-	unsigned int getQte();
-	void incQte();
-	Garniture decQte();
-		
-	const 	double		_cout;	
-	const 	string		_nom;
-	
-private:
-	unsigned int 	_qte;
+	GarnitureRegistre(string&& nom, unsigned int qte_initiale, double cout)
+		: AlimentRegistre(std::move(nom), qte_initiale, cout) {}
+
+	TypeAliment getTypeAliment() override { return TypeAliment::GARNITURE; }
 };
 
-
-class Garniture {
+class Garniture : public Aliment<GarnitureRegistre> {
 public:
-	friend class GarnitureRegistre;
-
-	double getCout() const;
-	string_view& getNom() const;
-
-	Garniture(const Garniture&) = delete;
+	Garniture(Garniture&&)            = default;
+	Garniture& operator=(Garniture&&) = default;
+	Garniture(const Garniture&)            = delete;
 	Garniture& operator=(const Garniture&) = delete;
+
+	template<typename, typename> friend class AlimentRegistre;
+
 private:
-	Garniture(GarnitureRegistre& source);
-	const GarnitureRegistre& source;
+	explicit Garniture(GarnitureRegistre& source) : Aliment(source) {}
 };

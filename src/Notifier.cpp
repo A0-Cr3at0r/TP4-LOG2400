@@ -10,13 +10,13 @@ void Notifier::notifier() {
     if (!(gi_.getQte()) && !etaitVide_) {
         etaitVide_ = true;
         for (auto&& abonne : abonnes_) {
-            abonne("[Notif Abonne] Rupture de stock pour " + gi_._nom);
+            abonne("[Notif Abonne] Rupture de stock pour '" + gi_._nom + "'.");
         }
     } else if (gi_.getQte() && etaitVide_)
-    {   
+    {
         etaitVide_ = false;
         for (auto&& abonne : abonnes_) {
-            abonne("[Notif Abonne] " + gi_._nom +  " est de retour");
+            abonne("[Notif Abonne] '" + gi_._nom + "' est de retour en stock.");
         }
     }
     

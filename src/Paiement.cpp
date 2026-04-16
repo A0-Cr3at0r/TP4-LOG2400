@@ -1,28 +1,60 @@
 #include "Paiement.h"
 
-double Paiement::totalProjete() {
-    return total_;
+bool Aucun::estPayable() const {
+    return false;
 }
 
-void Prevente::pay(double montant) {
-    total_ = 0.9 * montant;
+std::string Aucun::getNom() const {
+    return "Aucune";
 }
-std::string toString() {
+
+double Aucun::calculerTotal(double montant) const {
+    return montant;
+}
+
+
+
+
+bool Prevente::estPayable() const {
+    return true;
+}
+
+std::string Prevente::getNom() const {
     return "Prevente (-10%)";
 }
 
-void Eclair::pay(double montant) {
-    total_  = montant + 1.5;
+double Prevente::calculerTotal(double montant) const {
+    return 0.9 * montant;
 }
-std::string toString() {
+
+
+
+
+
+bool Eclair::estPayable() const {
+    return true;
+}
+
+std::string Eclair::getNom() const {
     return "Vente eclair (+1.50)";
 }
 
-void Poly::pay(double montant) {
-    total_ = montant - 2;
+double Eclair::calculerTotal(double montant) const {
+    return montant + 1.5;
 }
 
-std::string toString() {
+
+
+bool Poly::estPayable() const {
+    return true;
+}
+
+std::string Poly::getNom() const {
     return "Coupon Poly (-2.00)";
 }
+
+double Poly::calculerTotal(double montant) const {
+    return montant - 2.0;
+}
+
 

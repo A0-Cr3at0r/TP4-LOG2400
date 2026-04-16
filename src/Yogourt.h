@@ -1,42 +1,40 @@
-/// Yogourt.h
-// (C) 2026 maplefoxo
-// Purpose : 
-//
-
 #pragma once
-
 #include <pch.h>
-
 #include "Garniture.h"
+#include "const.h"
 #include <vector>
-#include <memory>
 
-#include "ui/UIManager.h"
+class Yogourt;
 
-
-class YogourtRegistre {
+class YogourtRegistre : public AlimentRegistre<YogourtRegistre, Yogourt> {
 public:
-    YogourtRegistre(string&& nom, double cout) :
-		_cout(cout), _nom(nom)
-		{};
-	const 	double		_cout;	
-	const 	string	_nom;
+    // Note: arg order is (nom, cout, qte) to match Inventaire registration calls,
+    // but AlimentRegistre expects (nom, qte, cout) — reordered in delegating call.
+    YogourtRegistre(string&& nom, double cout, unsigned int qte)
+        : AlimentRegistre(std::move(nom), qte, cout) {}
+
+    TypeAliment getTypeAliment() override { return TypeAliment::YOGOURT; }
 };
 
-
-class Yogourt {
+class Yogourt : public Aliment<YogourtRegistre> {
 public:
-    Yogourt(YogourtRegistre& sorte);
+    template<typename, typename> friend class AlimentRegistre;
 
-    void ajouterGarniture(Garniture&& garniture);
-    void undo();
-    double prixTotal() const;
-    const YogourtRegistre& getSorteYogourt() const;
+    explicit Yogourt(YogourtRegistre& sorte);
+    Yogourt(Yogourt&&)            = default;
+    Yogourt& operator=(Yogourt&&) = default;
+    Yogourt(const Yogourt&)            = delete;
+    Yogourt& operator=(const Yogourt&) = delete;
 
+    void          ajouterGarniture(typeGarniture type, Garniture&& garniture);
+    typeGarniture undo();
+    bool          hasGarnitures() const;
+    double        prixTotal()     const;
 
-private: 
-    const YogourtRegistre& _yogourt;
-    std::vector<Garniture> _garnitures;
+    const YogourtRegistre&            getSorteYogourt() const;
+    const std::vector<typeGarniture>& getTypes()        const;
 
+private:
+    std::vector<Garniture>     _garnitures;
+    std::vector<typeGarniture> _types;
 };
-

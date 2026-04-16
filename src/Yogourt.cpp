@@ -1,34 +1,28 @@
-/// Yogourt.cpp
-// (C) 2026 maplefoxo
-// Purpose : 
-//
-
 #include "Yogourt.h"
-#include "Garniture.h"
 
+Yogourt::Yogourt(YogourtRegistre& sorte) : Aliment(sorte) {}
 
-
-Yogourt::Yogourt(YogourtRegistre & sorte) : _yogourt(sorte)
-{}
-
-void Yogourt::ajouterGarniture(Garniture && garniture) {
-	_garnitures.push_back(std::move(garniture));
+void Yogourt::ajouterGarniture(typeGarniture type, Garniture&& garniture) {
+    _types.push_back(type);
+    _garnitures.push_back(std::move(garniture));
 }
 
-void Yogourt::undo() {
-	//TODOOOOOOOO
+typeGarniture Yogourt::undo() {
+    typeGarniture t = _types.back();
+    _types.pop_back();
+    _garnitures.pop_back();
+    return t;
 }
+
+bool Yogourt::hasGarnitures() const { return !_garnitures.empty(); }
 
 double Yogourt::prixTotal() const {
-	double prix = _yogourt._cout;
-	prix = std::accumulate(_garnitures.cbegin(), _garnitures.cend(), prix, 
-						   [&](double acc, Garniture& garni) {	
-								return acc + garni.getCout();
-							});
-
-	return prix;
+    double total = getCout();
+    for (const auto& g : _garnitures)
+        total += g.getCout();
+    return total;
 }
 
-const YogourtRegistre& Yogourt::getSorteYogourt() const {
-	return _yogourt;
-}
+const YogourtRegistre& Yogourt::getSorteYogourt() const { return source; }
+
+const std::vector<typeGarniture>& Yogourt::getTypes() const { return _types; }

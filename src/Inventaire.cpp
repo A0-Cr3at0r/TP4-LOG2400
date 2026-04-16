@@ -1,72 +1,71 @@
-/// Inventaire.cpp
-// (C) 2026 maplefoxo
-// Purpose : 
-//
 #include <pch.h>
-
 #include "Inventaire.h"
 #include "const.h"
+#include "ui/UIManager.h"
 
 Inventaire* Inventaire::inv = nullptr;
 
 Inventaire& Inventaire::get() {
-	if (inv == nullptr) 
-		inv = new Inventaire();
-
-	return *inv;
+    if (inv == nullptr)
+        inv = new Inventaire();
+    return *inv;
 }
 
 void Inventaire::destroy() {
-	if (inv != nullptr) {
-		delete inv;
-		inv = nullptr;
-	}
+    if (inv != nullptr) { delete inv; inv = nullptr; }
 }
 
-unsigned int Inventaire::getNumGarnitures() const {
-	return _garnitures.size();
+unsigned int Inventaire::getNumGarnitures() const { return _garnitures.size(); }
+GarnitureRegistre& Inventaire::getGarniture(size_t i) { return _garnitures.at(i); }
+vector<GarnitureRegistre>::iterator Inventaire::garnitureBegin() { return _garnitures.begin(); }
+vector<GarnitureRegistre>::iterator Inventaire::garnitureEnd()   { return _garnitures.end(); }
+void Inventaire::enregistrerGarniture(GarnitureRegistre&& g) { _garnitures.push_back(std::move(g)); }
+
+unsigned int Inventaire::getNumYogourts() const { return _yogourts.size(); }
+YogourtRegistre& Inventaire::getYogourt(size_t i) { return _yogourts.at(i); }
+vector<YogourtRegistre>::iterator Inventaire::yogourtBegin() { return _yogourts.begin(); }
+vector<YogourtRegistre>::iterator Inventaire::yogourtEnd()   { return _yogourts.end(); }
+void Inventaire::enregistrerYogourt(YogourtRegistre&& y) { _yogourts.push_back(std::move(y)); }
+
+
+
+bool Inventaire::yogourtDisponible(typeYoGourt type) const {
+    return _yogourts[static_cast<size_t>(type)].getQte() > 0;
 }
 
-GarnitureRegistre & Inventaire::getGarniture(size_t index) {
-	return _garnitures.at(index);
+int Inventaire::getStockYogourt(typeYoGourt type) const {
+    return static_cast<int>(_yogourts[static_cast<size_t>(type)].getQte());
 }
 
-vector<GarnitureRegistre>::iterator Inventaire::garnitureBegin() {
-	return _garnitures.begin();
-}
-vector<GarnitureRegistre>::iterator Inventaire::garnitureEnd() {
-	return _garnitures.end();
+void Inventaire::retirerYogourt(typeYoGourt type) {
+    _yogourts[static_cast<size_t>(type)].decQte();
 }
 
-void Inventaire::enregistrerGarniture(GarnitureRegistre && garniture) {
-	_garnitures.push_back(std::move(garniture));
+
+
+bool Inventaire::garnitureDisponible(typeGarniture type) const {
+    return _garnitures[static_cast<size_t>(type)].getQte() > 0;
 }
 
-unsigned int Inventaire::getNumYogourts() const {
-	return _yogourts.size();
+int Inventaire::getStockGarniture(typeGarniture type) const {
+    return static_cast<int>(_garnitures[static_cast<size_t>(type)].getQte());
 }
 
-YogourtRegistre & Inventaire::getYogourt(size_t index) {
-	return _yogourts.at(index);
+Garniture Inventaire::retirerGarniture(typeGarniture type) {
+    return _garnitures[static_cast<size_t>(type)].decQte();
 }
 
-vector<YogourtRegistre>::iterator Inventaire::yogourtBegin() {
-	return _yogourts.begin();
-}
-vector<YogourtRegistre>::iterator Inventaire::yogourtEnd() {
-	return _yogourts.end();
+void Inventaire::ajouterGarniture(typeGarniture type) {
+    _garnitures[static_cast<size_t>(type)].incQte();
 }
 
-void Inventaire::enregistrerYogourt(YogourtRegistre && yogourt) {
-	_yogourts.push_back(std::move(yogourt));
-}
 
 Inventaire::Inventaire() {
-	enregistrerGarniture(GarnitureRegistre("fruits",	QTE_FRUIT,		PRIX_FRUIT));
-	enregistrerGarniture(GarnitureRegistre("granola",	QTE_GRANOLA,	PRIX_GRANOLA));
-	enregistrerGarniture(GarnitureRegistre("chocolat",	QTE_CHOCOLAT,	PRIX_CHOCOLAT));
-	enregistrerGarniture(GarnitureRegistre("miel",		QTE_MIEL,		PRIX_MIEL));
+    enregistrerYogourt(YogourtRegistre("nature",  PRIX_NATURE,  QTE_NATURE));
+    enregistrerYogourt(YogourtRegistre("grec",    PRIX_GREC,    QTE_GREC));
 
-	enregistrerYogourt(YogourtRegistre("nature",		PRIX_NATURE));
-	enregistrerYogourt(YogourtRegistre("grec",			PRIX_GREC));
+    enregistrerGarniture(GarnitureRegistre("fruits",   QTE_FRUIT,    PRIX_FRUIT));
+    enregistrerGarniture(GarnitureRegistre("granola",  QTE_GRANOLA,  PRIX_GRANOLA));
+    enregistrerGarniture(GarnitureRegistre("miel",     QTE_MIEL,     PRIX_MIEL));
+    enregistrerGarniture(GarnitureRegistre("chocolat", QTE_CHOCOLAT, PRIX_CHOCOLAT));
 }

@@ -5,8 +5,7 @@ Abonnement::Abonnement() {}
 Abonnement::~Abonnement() {}
 
 void Abonnement::sub(GarnitureRegistre& gi, std::function<void(std::string)>& abonne) {
-    auto& abonnement = std::make_unique<Notifier>(gi, abonne);
-    abonnements_.push_back(abonnement);
+    abonnements_.push_back(std::make_unique<Notifier>(gi, abonne));
 }
 
 void Abonnement::unsub(std::function<void(std::string)>& abonne, std::string nom) {

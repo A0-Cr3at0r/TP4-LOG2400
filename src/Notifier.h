@@ -17,9 +17,8 @@ public:
     void removeAbonne(std::function<void(std::string)>& abonne);
     bool contains(std::function<void(std::string)>& abonne);
 
-private: 
+private:
     GarnitureRegistre& gi_;
-    YogourtRegistre& yi_;
     std::vector<std::function<void(std::string)>> abonnes_;
     bool etaitVide_ = true;
 };

@@ -1,37 +1,70 @@
+#pragma once
 #include "Inventaire.h"
 #include "Paiement.h"
 #include "Abonnement.h"
-#include <stack>
+#include "Yogourt.h"
+#include "const.h"
+#include <vector>
+#include <memory>
+#include <optional>
 
-class CommandYogourt
-{
+class EtatPhaseAppli;
+class EtatPhaseCommandeInitiale;
+class EtatPhaseCommandePreparation;
+class EtatPhaseCommandeTerminee;
 
+class CommandYogourt {
 public:
-    CommandYogourt(/* args */);
-    ~CommandYogourt();
+    explicit CommandYogourt(Inventaire& inv, Abonnement& abo);
+    ~CommandYogourt() = default;
 
-    void typeYogourt();
-    void selYogourt(int index);
-    void menu();
-    void retirerGarniture(Garniture& Garniture);
-    void appliquerGarniture(Garniture& garniture);
-    void mode(std::unique_ptr<Paiement> paiement);
-    void pay();
-    void pay(std::unique_ptr<Paiement> paiement);
-    int total();
-    int totalProjete();
-    void stock();
-    void sub(std::string garniture,  std::function<void(std::string)>& abonne);
-    void unSub(std::function<void(std::string)>& abonne, std::string nom);
-    void subs(std::function<void(std::string)>& abonne);
+    // ── Patron État ──────────────────────────────────────────────────
+    void setState(EtatPhaseAppli* etat);
+    EtatPhaseAppli*               getEtatCourant()     const;
+    EtatPhaseCommandeInitiale*    getEtatInitiale()    const;
+    EtatPhaseCommandePreparation* getEtatPreparation() const;
+    EtatPhaseCommandeTerminee*    getEtatTerminee()    const;
+
+    // ── Gestion des yogourts ─────────────────────────────────────────
+    const std::vector<Yogourt>& getYogourts() const;
+    Yogourt*                    getYogourtActif();
+    int                         getIndexActif() const;
+    void                        setYogourtActif(int index);
+    void                        ajouterNouveauYogourt(typeYoGourt type);
+
+    // ── Prix ─────────────────────────────────────────────────────────
+    double getSousTotal() const;
+
+    // ── Paiement ─────────────────────────────────────────────────────
+    Paiement*                getPaiement() const;
+    void                     setPaiement(std::unique_ptr<Paiement> p);
+
+    // ── Undo / Redo ──────────────────────────────────────────────────
+    void          clearRedo();
+    bool          hasRedo() const;
+    void          setRedoGarniture(typeGarniture type);
+    typeGarniture getRedoGarniture() const;
+
+    // ── Flags ────────────────────────────────────────────────────────
+    void setTermine(bool val);
+    bool isTermine() const;
+
+    // ── Accès infrastructure ─────────────────────────────────────────
+    Inventaire& getInventaire();
+    Abonnement& getAbonnement();
 
 private:
-    int yogourtActif = 0;
     Inventaire& inventaire_;
-    std::unique_ptr<Paiement> paiement_;
     Abonnement& abonnement_;
-    std::stack<Garniture&> actionHistorique_;
+
+    std::vector<Yogourt>         yogourts_;
+    int                          yogourtActif_ = -1;
+    std::unique_ptr<Paiement>    paiement_;
+    std::optional<typeGarniture> redoGarniture_;
+    bool                         termine_ = false;
+
+    std::unique_ptr<EtatPhaseCommandeInitiale>    etatInitiale_;
+    std::unique_ptr<EtatPhaseCommandePreparation> etatPreparation_;
+    std::unique_ptr<EtatPhaseCommandeTerminee>    etatTerminee_;
+    EtatPhaseAppli*                               etatCourant_ = nullptr;
 };
-
-
-
