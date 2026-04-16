@@ -42,7 +42,7 @@ public:
 	template<typename... Args>
 	static void printf(const UIMessage& msg, Args... args);
 	
-	static CommandInput scanf()
+	static CommandInput scanf();
 private:
 	UIManager() = delete;
 	static constexpr const char* getCharCSeq(const Couleurs clr);

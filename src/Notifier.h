@@ -19,6 +19,7 @@ public:
 
 private: 
     GarnitureRegistre& gi_;
+    YogourtRegistre& yi_;
     std::vector<std::function<void(std::string)>> abonnes_;
     bool etaitVide_ = true;
 };
