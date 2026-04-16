@@ -8,6 +8,7 @@ public:
     ~Abonnement();
 
     void sub(GarnitureRegistre& gi, std::function<void(std::string)>& abonne);
+    void sub(YogourtRegistre& gi, std::function<void(std::string)>& abonne);
     void unsub(std::function<void(std::string)>& abonne, std::string nom);
     void subs(std::function<void(std::string)>& abonne);
     void notifier();

@@ -1,5 +1,6 @@
 #pragma once
 #include "Garniture.h"
+#include "Yogourt.h"
 #include <functional>
 
 
@@ -9,6 +10,7 @@ class Notifier
 
 public:
     Notifier(GarnitureRegistre& gi, std::function<void(std::string)>& abonne);
+    Notifier(YogourtRegistre& yi, std::function<void(std::string)>& abonne);
     ~Notifier();
 
     void notifier();
@@ -18,8 +20,8 @@ public:
     bool contains(std::function<void(std::string)>& abonne);
 
 private: 
-    GarnitureRegistre& gi_;
-    YogourtRegistre& yi_;
+    GarnitureRegistre* gi_;
+    YogourtRegistre* yi_;
     std::vector<std::function<void(std::string)>> abonnes_;
     bool etaitVide_ = true;
 };

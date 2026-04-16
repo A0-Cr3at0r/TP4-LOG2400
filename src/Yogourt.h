@@ -21,6 +21,14 @@ public:
 		{};
 	const 	double		_cout;	
 	const 	string	_nom;
+
+    unsigned int getQte();
+	void incQte();
+	int decQte();
+
+private:
+   	unsigned int 	_qte;
+
 };
 
 

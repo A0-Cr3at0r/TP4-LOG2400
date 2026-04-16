@@ -7,17 +7,17 @@ class CommandYogourt
 {
 
 public:
-    CommandYogourt(/* args */);
+    CommandYogourt(Inventaire& Inventaire, std::unique_ptr<Paiement>& paiement, Abonnement& abonnement);
     ~CommandYogourt();
 
-    void typeYogourt();
+    void typeYogourt(std::string Yogourt);
     void selYogourt(int index);
     void menu();
     void retirerGarniture(Garniture& Garniture);
     void appliquerGarniture(Garniture& garniture);
-    void mode(std::unique_ptr<Paiement> paiement);
+    void mode(std::unique_ptr<Paiement>& paiement);
     void pay();
-    void pay(std::unique_ptr<Paiement> paiement);
+    void pay(std::unique_ptr<Paiement>& paiement);
     int total();
     int totalProjete();
     void stock();
@@ -27,8 +27,9 @@ public:
 
 private:
     int yogourtActif = 0;
+    std::vector<std::unique_ptr<Yogourt>> yogourts_;
     Inventaire& inventaire_;
-    std::unique_ptr<Paiement> paiement_;
+    std::unique_ptr<Paiement>& paiement_;
     Abonnement& abonnement_;
     std::stack<Garniture&> actionHistorique_;
 };
