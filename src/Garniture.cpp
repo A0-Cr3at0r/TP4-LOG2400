@@ -3,20 +3,29 @@
 // Purpose : 
 //
 
-
 #include "Garniture.h"
+#include "ui/UIManager.h"
 
-GarnitureRegistre::GarnitureRegistre(string& nom ,unsigned int qte_initiale,double cout) :
+GarnitureRegistre::GarnitureRegistre(string&& nom ,unsigned int qte_initiale,double cout) :
 	_nom(nom), _qte(qte_initiale), _cout(cout)
-{}
+{
+	UIManager::print("[Stock] ", Couleurs::CYAN);
+	UIManager::printf("%s : 0 -> %i\n", Couleurs::DEFAULT, _nom.c_str(), _qte);
+}
 
 unsigned int GarnitureRegistre::getQte() {
 	return _qte;
 }
-void GarnitureRegistre::incQte() { ++_qte; }
+void GarnitureRegistre::incQte() { 
+	auto oldqt = _qte++;
+	UIManager::print("[Stock] ", Couleurs::CYAN);
+	UIManager::printf("%s : %i -> %i\n", Couleurs::DEFAULT, _nom.c_str(), oldqt, _qte);
+}
 
 Garniture GarnitureRegistre::decQte() {
-	 --_qte;
+	auto oldqt = _qte--;
+	UIManager::print("[Stock] ", Couleurs::CYAN);
+	UIManager::printf("%s : %i -> %i\n", Couleurs::DEFAULT, _nom.c_str(), oldqt, _qte);
 	return Garniture(*this);
 }
 

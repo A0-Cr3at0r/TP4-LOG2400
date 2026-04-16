@@ -20,10 +20,3 @@ static const int QTE_GRANOLA  = 4;
 static const int QTE_MIEL  = 4;
 static const int QTE_CHOCOLAT  = 1;
 static const char DOLLARS = '$';
-
-const std::unordered_map<typeGarniture, std::tuple<double, int>>PRIX_GARNITURES = {
-    {typeGarniture::FRUIT, (PRIX_FRUIT, QTE_FRUIT)},
-    {typeGarniture::GRANOLA, (PRIX_GRANOLA, QTE_GRANOLA)},
-    {typeGarniture::MIEL, (PRIX_MIEL, QTE_MIEL)},
-    {typeGarniture::CHOCOLAT, (PRIX_CHOCOLAT, QTE_CHOCOLAT)}
-};

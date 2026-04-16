@@ -9,6 +9,7 @@
 
 #include "Garniture.h"
 #include "Yogourt.h"
+
 #include <vector>
 #include <memory>
 
@@ -16,22 +17,32 @@ class Inventaire { // patron singleton, observateur
 public:
 
 	static Inventaire& get();
-
+	void destroy();
 
 	unsigned int	getNumGarnitures() const;
-	weak_ptr<Garniture>&	getGarniture(unsigned int index);
-	void enregistrerGarniture(GarnitureRegistre&&);
+	GarnitureRegistre&	getGarniture(size_t index);
+	vector<GarnitureRegistre>::iterator garnitureBegin();
+	vector<GarnitureRegistre>::iterator garnitureEnd();
+
+	void enregistrerGarniture(GarnitureRegistre&& garniture);
 
 	unsigned int	getNumYogourts() const;
-	weak_ptr<Garniture>&	getYogourt(unsigned int index);
-	void enregistrerGarniture(Yogourt&&);
+	YogourtRegistre&	getYogourt(size_t index);
+	vector<YogourtRegistre>::iterator yogourtBegin();
+	vector<YogourtRegistre>::iterator yogourtEnd();
+	void enregistrerYogourt(YogourtRegistre&& yogourt);
+
+
 private:
 	// singleton, enforce inst unique
+	static Inventaire* inv;
+
 	Inventaire();
 	Inventaire(const Inventaire&) = delete;
 	Inventaire& operator=(const Inventaire&) = delete;
 
-
-	const vector<unique_ptr<Yogourt>>& yogourts;
-	const vector<unique_ptr<GarnitureRegistre>>& garnitures;
+	vector<YogourtRegistre> _yogourts;
+	vector<GarnitureRegistre> _garnitures;
 };
+
+

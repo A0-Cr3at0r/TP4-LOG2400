@@ -4,12 +4,10 @@
 
 
 #include "ui/UIManager.h"
+#include "Inventaire.h"
 
 int main() {
-    UIMessage a{"aafsgagsd"};
+    UIManager::printf("asbestos :  %i \n", Couleurs::BLEU, Inventaire::get().getNumGarnitures());
 
-    UIManager::printf(a);
-    UIManager::printf("\ngagaggoogoo%i", Couleurs::CYAN, 69);
-    UIManager::cls();
     return 0;
 };
