@@ -1,15 +1,14 @@
 #pragma once
-//#include "GarnitureInventaire.h"
+#include "Garniture.h"
 #include <functional>
-#include <vector>
-#include <string>
+
 
 
 class Notifier
 {
 
 public:
-//    Notifier(GarnitureInventaire& gi, std::function<void(std::string)>& abonne);
+    Notifier(GarnitureRegistre& gi, std::function<void(std::string)>& abonne);
     ~Notifier();
 
     void notifier();
@@ -19,8 +18,9 @@ public:
     bool contains(std::function<void(std::string)>& abonne);
 
 private: 
-//    GarnitureInventaire& gi_;
+    GarnitureRegistre& gi_;
     std::vector<std::function<void(std::string)>> abonnes_;
+    bool etaitVide_ = true;
 };
 
 
