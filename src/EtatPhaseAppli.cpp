@@ -1,44 +1,11 @@
 #include "EtatPhaseAppli.h"
+#include "AppliCommande.h"
 #include "CommandYogourt.h"
 #include "Inventaire.h"
 #include "Paiement.h"
 #include "helpers.h"
 #include "ui/UIManager.h"
 #include <cstdio>
-
-
-
-static void changerModeImpl(CommandYogourt* c, const std::string& mode) {
-    if (mode == "prev") {
-        c->setPaiement(std::make_unique<Prevente>());
-        UIManager::print("Mode de paiement actif: Prevente (-10%).\n", Couleurs::DEFAULT);
-    } else if (mode == "eclair") {
-        c->setPaiement(std::make_unique<Eclair>());
-        UIManager::print("Mode de paiement actif: Vente eclair (+1.50).\n", Couleurs::DEFAULT);
-    } else if (mode == "poly") {
-        c->setPaiement(std::make_unique<Poly>());
-        UIManager::print("Mode de paiement actif: Coupon Poly (-2.00).\n", Couleurs::DEFAULT);
-    }
-}
-
-static void voirTotalImpl(CommandYogourt* c) {
-    double st = c->getSousTotal();
-    UIManager::printf("Sous-total: %.2f CAD\n", Couleurs::CYAN, st);
-    if (c->getPaiement()->estPayable()) {
-        double total = c->getPaiement()->calculerTotal(st);
-        UIManager::printf("Total avec %s: %.2f CAD\n", Couleurs::CYAN,
-                          c->getPaiement()->getNom().c_str(), total);
-    }
-}
-
-static void voirStockImpl(CommandYogourt* c) {
-    Inventaire& inv = c->getInventaire();
-    UIManager::print("Stocks:\n", Couleurs::CYAN);
-    for (auto it = inv.yogourtBegin(); it != inv.yogourtEnd(); ++it)
-        UIManager::printf("  %s: %d\n", Couleurs::DEFAULT, it->_nom.c_str(), (int)it->getQte());
-    for (auto it = inv.garnitureBegin(); it != inv.garnitureEnd(); ++it)
-        UIManager::printf("  %s: %d\n", Couleurs::DEFAULT, it->_nom.c_str(), (int)it->getQte());
-}
 
 
 
@@ -51,8 +18,8 @@ void EtatPhaseAppli::Payer() {
                       Couleurs::ROUGE, nom_);
 }
 
-void EtatPhaseAppli::VoirTotal()  { voirTotalImpl(commande_); }
-void EtatPhaseAppli::VoirStock()  { voirStockImpl(commande_); }
+void EtatPhaseAppli::VoirTotal()  { AppliCommandeVoirTotal(*commande_).Execute(); }
+void EtatPhaseAppli::VoirStock()  { AppliCommandeVoirStock(*commande_).Execute(); }
 
 
 
@@ -180,11 +147,11 @@ void EtatPhaseCommandeInitiale::PreparerCommande() {
 }
 
 void EtatPhaseCommandeInitiale::ChangerModePaiement(const std::string& mode) {
-    changerModeImpl(commande_, mode);
+    AppliCommandeChangerModePaiement(*commande_, mode).Execute();
 }
 
-void EtatPhaseCommandeInitiale::VoirTotal()  { voirTotalImpl(commande_); }
-void EtatPhaseCommandeInitiale::VoirStock()  { voirStockImpl(commande_); }
+void EtatPhaseCommandeInitiale::VoirTotal()  { AppliCommandeVoirTotal(*commande_).Execute(); }
+void EtatPhaseCommandeInitiale::VoirStock()  { AppliCommandeVoirStock(*commande_).Execute(); }
 
 
 
@@ -214,7 +181,7 @@ void EtatPhaseCommandePreparation::PreparerCommande() {
 }
 
 void EtatPhaseCommandePreparation::ChangerModePaiement(const std::string& mode) {
-    changerModeImpl(commande_, mode);
+    AppliCommandeChangerModePaiement(*commande_, mode).Execute();
 }
 
 void EtatPhaseCommandePreparation::TerminerCommande() {
@@ -222,8 +189,8 @@ void EtatPhaseCommandePreparation::TerminerCommande() {
     commande_->setState(commande_->getEtatTerminee());
 }
 
-void EtatPhaseCommandePreparation::VoirTotal() { voirTotalImpl(commande_); }
-void EtatPhaseCommandePreparation::VoirStock() { voirStockImpl(commande_); }
+void EtatPhaseCommandePreparation::VoirTotal() { AppliCommandeVoirTotal(*commande_).Execute(); }
+void EtatPhaseCommandePreparation::VoirStock() { AppliCommandeVoirStock(*commande_).Execute(); }
 
 
 
@@ -257,7 +224,7 @@ void EtatPhaseCommandeTerminee::TerminerCommande() {
 }
 
 void EtatPhaseCommandeTerminee::ChangerModePaiement(const std::string& mode) {
-    changerModeImpl(commande_, mode);
+    AppliCommandeChangerModePaiement(*commande_, mode).Execute();
 }
 
 void EtatPhaseCommandeTerminee::Payer() {
@@ -274,5 +241,5 @@ void EtatPhaseCommandeTerminee::Payer() {
     commande_->setTermine(true);
 }
 
-void EtatPhaseCommandeTerminee::VoirTotal() { voirTotalImpl(commande_); }
-void EtatPhaseCommandeTerminee::VoirStock() { voirStockImpl(commande_); }
+void EtatPhaseCommandeTerminee::VoirTotal() { AppliCommandeVoirTotal(*commande_).Execute(); }
+void EtatPhaseCommandeTerminee::VoirStock() { AppliCommandeVoirStock(*commande_).Execute(); }

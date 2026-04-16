@@ -1,8 +1,11 @@
 #include "Notifier.h"
+#include <algorithm>
 
-Notifier::Notifier(GarnitureRegistre& gi, std::function<void(std::string)>& abonne) : 
-gi_(gi)
-{abonnes_.push_back(abonne);}
+Notifier::Notifier(GarnitureRegistre& gi, const std::function<void(std::string)>& abonne)
+    : gi_(gi)
+{
+    abonnes_.push_back(abonne);
+}
 
 Notifier::~Notifier() {}
 
@@ -19,25 +22,21 @@ void Notifier::notifier() {
             abonne("[Notif Abonne] '" + gi_._nom + "' est de retour en stock.");
         }
     }
-    
 }
-
 
 std::string Notifier::getAbonnement() {
     return gi_._nom;
 }
 
-
-void Notifier::addAbonne(std::function<void(std::string)>& abonne) {
+void Notifier::addAbonne(const std::function<void(std::string)>& abonne) {
     abonnes_.push_back(abonne);
 }
 
-void Notifier::removeAbonne(std::function<void(std::string)>& abonne) {
-    auto it = std::remove(abonnes_.begin(), abonnes_.end(), abonne);
-    abonnes_.erase(it, abonnes_.end());
+void Notifier::removeAbonne(const std::function<void(std::string)>&) {
+    abonnes_.clear();
 }
 
-bool Notifier::contains(std::function<void(std::string)>& abonne) {
-    return std::find(abonnes_.begin(), abonnes_.end(), abonne) != abonnes_.end();
+bool Notifier::contains(const std::function<void(std::string)>&) {
+    return !abonnes_.empty();
 }
 
