@@ -21,6 +21,7 @@ void CommandYogourt::typeYogourt(std::string yogourt) {
     if (registre.getQte()) {
         yogourtActif++;
         yogourts_.push_back(std::make_unique<Yogourt>(Yogourt(registre)));
+        actionHistorique_.push_back(std::stack<Garniture&&>());
     }
 }
 
@@ -31,12 +32,18 @@ void CommandYogourt::selYogourt(int index) {
 void CommandYogourt::appliquerGarniture(Garniture& garniture) {
     yogourts_[yogourtActif]->ajouterGarniture(garniture);
     while(!actionHistorique_.empty()) {
-        actionHistorique_.pop();
+        actionHistorique_[yogourtActif].pop();
     }
 }
 
 void CommandYogourt::undo() {
-    actionHistorique_.push(yogourts_[yogourtActif]->undo());
+    actionHistorique_[yogourtActif].push(yogourts_[yogourtActif]->undo());
+}
+
+void CommandYogourt::redo() {
+    yogourts_[yogourtActif]->ajouterGarniture(actionHistorique_[yogourtActif].top());
+    actionHistorique_[yogourtActif].pop();
+
 }
 
 void CommandYogourt::mode(std::unique_ptr<Paiement>& paiement) {

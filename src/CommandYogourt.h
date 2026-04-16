@@ -32,7 +32,7 @@ private:
     Inventaire& inventaire_;
     std::unique_ptr<Paiement>& paiement_;
     Abonnement& abonnement_;
-    std::stack<Garniture&&> actionHistorique_;
+    std::vector<std::stack<Garniture&>> actionHistorique_;
 };
 
 
