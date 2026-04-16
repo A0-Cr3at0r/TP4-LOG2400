@@ -17,7 +17,6 @@ private:
     Abonnement     abonnement_;
     CommandYogourt commande_;
 
-    // Abonnements yogourts (Notifier ne supporte que GarnitureRegistre)
     std::unordered_map<std::string, std::function<void(std::string)>> yogourtAbonnes_;
     std::unordered_map<std::string, bool>                             yogourtEtaitVide_;
 

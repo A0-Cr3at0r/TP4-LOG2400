@@ -16,15 +16,12 @@ AppController::~AppController() {
     Inventaire::get().destroy();
 }
 
-// ── Callback notification ─────────────────────────────────────────────────────
-
 std::function<void(std::string)> AppController::notifCallback() {
     return [](std::string msg) {
         UIManager::print((msg + "\n").c_str(), Couleurs::ROUGE);
     };
 }
 
-// ── Boucle principale ─────────────────────────────────────────────────────────
 
 void AppController::run() {
     while (!commande_.isTermine()) {
@@ -44,7 +41,6 @@ void AppController::run() {
     }
 }
 
-// ── Affichage statut ──────────────────────────────────────────────────────────
 
 void AppController::afficherStatut() const {
     // Ligne Phase
@@ -77,10 +73,8 @@ void AppController::afficherStatut() const {
         }
     }
 
-    // Sous-total
     UIManager::printf("Sous-total commande: %.2f CAD\n", Couleurs::DEFAULT, commande_.getSousTotal());
 
-    // Ligne paiement
     Paiement* p = commande_.getPaiement();
     if (!p->estPayable()) {
         UIManager::print("Paiement: Aucune | ", Couleurs::DEFAULT);
@@ -98,7 +92,6 @@ void AppController::afficherStatut() const {
     }
 }
 
-// ── Aide ──────────────────────────────────────────────────────────────────────
 
 void AppController::afficherAide() const {
     UIManager::print("Commandes:\n", Couleurs::CYAN);
@@ -122,7 +115,6 @@ void AppController::afficherAide() const {
     UIManager::print("  q                    -> Quitter\n",                         Couleurs::DEFAULT);
 }
 
-// ── Dispatch commandes ────────────────────────────────────────────────────────
 
 void AppController::traiterCommande(const CommandInput& input) {
     EtatPhaseAppli* etat = commande_.getEtatCourant();
@@ -164,14 +156,12 @@ void AppController::traiterCommande(const CommandInput& input) {
     }
 }
 
-// ── Abonnements ───────────────────────────────────────────────────────────────
 
 void AppController::traiterSub(const std::string& article) {
     if (article.empty()) return;
 
     auto cb = notifCallback();
 
-    // Chercher dans les garnitures
     Inventaire& inv = commande_.getInventaire();
     for (auto it = inv.garnitureBegin(); it != inv.garnitureEnd(); ++it) {
         if (it->_nom == article) {
@@ -182,7 +172,6 @@ void AppController::traiterSub(const std::string& article) {
         }
     }
 
-    // Chercher dans les yogourts
     for (auto it = inv.yogourtBegin(); it != inv.yogourtEnd(); ++it) {
         if (it->_nom == article) {
             yogourtAbonnes_[article]   = cb;
@@ -199,7 +188,6 @@ void AppController::traiterSub(const std::string& article) {
 void AppController::traiterUnsub(const std::string& article) {
     if (article.empty()) return;
 
-    // Yogourts
     auto ity = yogourtAbonnes_.find(article);
     if (ity != yogourtAbonnes_.end()) {
         yogourtAbonnes_.erase(ity);
@@ -208,7 +196,6 @@ void AppController::traiterUnsub(const std::string& article) {
         return;
     }
 
-    // Garnitures
     auto cb = notifCallback();
     abonnement_.unsub(cb, article);
     UIManager::printf("[Abonnement] Desabonne de '%s'.\n", Couleurs::CYAN, article.c_str());
@@ -217,23 +204,19 @@ void AppController::traiterUnsub(const std::string& article) {
 void AppController::traiterSubs() const {
     UIManager::print("Abonnements actifs:\n", Couleurs::CYAN);
 
-    // Yogourts
     for (const auto& [nom, _] : yogourtAbonnes_)
         UIManager::printf("  - %s\n", Couleurs::DEFAULT, nom.c_str());
 
-    // Garnitures via Abonnement::subs
     auto cb = [](std::string nom) {
         UIManager::printf("  - %s\n", Couleurs::DEFAULT, nom.c_str());
     };
     std::function<void(std::string)> cbFn = cb;
-    // Note: Abonnement::subs prend une ref non-const; cast temporaire accepté ici
     const_cast<Abonnement&>(abonnement_).subs(cbFn);
 }
 
 void AppController::verifierAbonnementsYogourt() {
     Inventaire& inv = commande_.getInventaire();
     for (auto& [nom, cb] : yogourtAbonnes_) {
-        // Trouver le YogourtRegistre par nom
         for (auto it = inv.yogourtBegin(); it != inv.yogourtEnd(); ++it) {
             if (it->_nom != nom) continue;
             bool estVide   = (it->getQte() == 0);

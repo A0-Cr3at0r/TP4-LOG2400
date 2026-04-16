@@ -18,38 +18,31 @@ public:
     explicit CommandYogourt(Inventaire& inv, Abonnement& abo);
     ~CommandYogourt() = default;
 
-    // ── Patron État ──────────────────────────────────────────────────
     void setState(EtatPhaseAppli* etat);
     EtatPhaseAppli*               getEtatCourant()     const;
     EtatPhaseCommandeInitiale*    getEtatInitiale()    const;
     EtatPhaseCommandePreparation* getEtatPreparation() const;
     EtatPhaseCommandeTerminee*    getEtatTerminee()    const;
 
-    // ── Gestion des yogourts ─────────────────────────────────────────
     const std::vector<Yogourt>& getYogourts() const;
     Yogourt*                    getYogourtActif();
     int                         getIndexActif() const;
     void                        setYogourtActif(int index);
     void                        ajouterNouveauYogourt(typeYoGourt type);
 
-    // ── Prix ─────────────────────────────────────────────────────────
     double getSousTotal() const;
 
-    // ── Paiement ─────────────────────────────────────────────────────
     Paiement*                getPaiement() const;
     void                     setPaiement(std::unique_ptr<Paiement> p);
 
-    // ── Undo / Redo ──────────────────────────────────────────────────
     void          clearRedo();
     bool          hasRedo() const;
     void          setRedoGarniture(typeGarniture type);
     typeGarniture getRedoGarniture() const;
 
-    // ── Flags ────────────────────────────────────────────────────────
     void setTermine(bool val);
     bool isTermine() const;
 
-    // ── Accès infrastructure ─────────────────────────────────────────
     Inventaire& getInventaire();
     Abonnement& getAbonnement();
 
