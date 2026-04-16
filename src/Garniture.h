@@ -10,7 +10,7 @@
 
 class GarnitureRegistre {
 public:
-	GarnitureRegistre(string& nom, unsigned int qte_initiale, double cout);
+	GarnitureRegistre(string&& nom, const unsigned int qte_initiale, const double cout);
 	
 	unsigned int getQte();
 	void incQte();
@@ -30,7 +30,6 @@ public:
 
 	double getCout() const;
 	string_view& getNom() const;
-
 
 	Garniture(const Garniture&) = delete;
 	Garniture& operator=(const Garniture&) = delete;

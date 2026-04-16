@@ -1,22 +1,34 @@
+/// Yogourt.cpp
+// (C) 2026 maplefoxo
+// Purpose : 
+//
+
 #include "Yogourt.h"
+#include "Garniture.h"
 
-Yogourt::Yogourt(typeYoGourt type) : type_(type) {}
 
-Yogourt::~Yogourt() {}
 
-void Yogourt::ajouterGarniture(Garniture garniture) {
-    garnitures_.push_back(std::make_unique<Garniture>(std::move(garniture)));
+Yogourt::Yogourt(YogourtRegistre & sorte) : _yogourt(sorte)
+{}
+
+void Yogourt::ajouterGarniture(Garniture && garniture) {
+	_garnitures.push_back(std::move(garniture));
 }
 
 void Yogourt::undo() {
-    garnitures_.pop_back();
+	//TODOOOOOOOO
 }
 
-double Yogourt::prixTotal() {
-    double total = type_ == typeYoGourt::GREC ? PRIX_GREC : PRIX_NATURE;
-    for (auto& ptr : garnitures_) {
-        total += ptr->getPrice();
-    }
-    return total;
+double Yogourt::prixTotal() const {
+	double prix = _yogourt._cout;
+	prix = std::accumulate(_garnitures.cbegin(), _garnitures.cend(), prix, 
+						   [&](double acc, Garniture& garni) {	
+								return acc + garni.getCout();
+							});
+
+	return prix;
 }
 
+const YogourtRegistre& Yogourt::getSorteYogourt() const {
+	return _yogourt;
+}

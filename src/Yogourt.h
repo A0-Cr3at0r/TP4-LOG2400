@@ -1,19 +1,42 @@
+/// Yogourt.h
+// (C) 2026 maplefoxo
+// Purpose : 
+//
+
+#pragma once
+
+#include <pch.h>
+
 #include "Garniture.h"
 #include <vector>
 #include <memory>
 
+#include "ui/UIManager.h"
+
+
+class YogourtRegistre {
+public:
+    YogourtRegistre(string&& nom, double cout) :
+		_cout(cout), _nom(nom)
+		{};
+	const 	double		_cout;	
+	const 	string	_nom;
+};
+
+
 class Yogourt {
 public:
-    Yogourt(typeYoGourt type);
-    ~Yogourt();
+    Yogourt(YogourtRegistre& sorte);
 
-    void ajouterGarniture(Garniture garniture);
+    void ajouterGarniture(Garniture&& garniture);
     void undo();
-    double prixTotal();
+    double prixTotal() const;
+    const YogourtRegistre& getSorteYogourt() const;
+
 
 private: 
-    typeYoGourt type_;
-    std::vector<std::unique_ptr<Garniture>> garnitures_;
+    const YogourtRegistre& _yogourt;
+    std::vector<Garniture> _garnitures;
 
 };
 

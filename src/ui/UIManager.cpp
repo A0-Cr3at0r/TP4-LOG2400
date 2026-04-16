@@ -2,9 +2,11 @@
 // (C) 2026 maplefoxo
 // Purpose : 
 // 
-#include "pch.h"
+#include <pch.h>
 
 #include <cstdio>
+#include <iostream>
+#include <iosfwd>
 
 #include "UIManager.h"
 
