@@ -1,4 +1,6 @@
 #include "Garniture.h"
+#include <string>
+
 
 class GarnitureInventaire : public Garniture
 {
@@ -8,7 +10,10 @@ public:
     ~GarnitureInventaire();
 
     bool isEmpty();
+    bool wasEmpty();
+    void observer();
     bool isGarniture(typeGarniture type);
+    std::string getNom();
 
     Garniture retirerGarniture();
     void ajouterGarniture();
