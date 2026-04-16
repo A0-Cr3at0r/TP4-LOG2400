@@ -36,8 +36,8 @@ class Yogourt {
 public:
     Yogourt(YogourtRegistre& sorte);
 
-    void ajouterGarniture(Garniture&& garniture);
-    void undo();
+    void ajouterGarniture(Garniture& garniture);
+    Garniture&& undo();
     double prixTotal() const;
     const YogourtRegistre& getSorteYogourt() const;
 

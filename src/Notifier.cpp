@@ -25,11 +25,19 @@ void Notifier::notifier() {
         }
         return;
     }
-    if (!etaitVide_) {
-        etaitVide_ = true;
-        for (auto&& abonne : abonnes_) {
-            abonne("[Notif Abonne] Rupture de stock pour " + yi_->_nom);
+    if (yi_) {
+        if (!(yi_->getQte()) && !etaitVide_) {
+            etaitVide_ = true;
+            for (auto&& abonne : abonnes_) {
+                abonne("[Notif Abonne] Rupture de stock pour " + gi_->_nom);
+            }
+        } else if (yi_->getQte() && etaitVide_) {   
+            etaitVide_ = false;
+            for (auto&& abonne : abonnes_) {
+                abonne("[Notif Abonne] " + gi_->_nom +  " est de retour");
+            }
         }
+        return;
     }
     
     
