@@ -1,5 +1,4 @@
-/// Garniture.h
-// (C) 2026 maplefoxo
+
 
 #pragma once
 

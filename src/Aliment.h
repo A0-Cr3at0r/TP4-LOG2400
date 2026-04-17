@@ -1,6 +1,3 @@
-/// Aliment.h
-// (C) 2026 maplefoxo
-// Purpose : Template base classes for stock-managed alimentary items
 
 #pragma once
 
