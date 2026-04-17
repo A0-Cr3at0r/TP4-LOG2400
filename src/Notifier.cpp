@@ -2,7 +2,7 @@
 #include <algorithm>
 
 Notifier::Notifier(GarnitureRegistre& gi, const std::function<void(std::string)>& abonne)
-    : gi_(gi)
+    : gi_(gi), etaitVide_(gi.getQte() == 0)
 {
     abonnes_.push_back(abonne);
 }

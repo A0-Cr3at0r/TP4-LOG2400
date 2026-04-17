@@ -20,7 +20,7 @@ public:
 private:
     GarnitureRegistre& gi_;
     std::vector<std::function<void(std::string)>> abonnes_;
-    bool etaitVide_ = true;
+    bool etaitVide_;
 };
 
 
